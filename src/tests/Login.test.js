@@ -6,6 +6,20 @@ import { BrowserRouter } from "react-router-dom";
 import { store } from "../store";
 import App from "../App";
 
+const fakeUser = {
+  user: {
+    email: "",
+    password: "",
+  },
+  token,
+  message,
+};
+
+const user = { email: "gustavo@gmail.com", password: "Gustavo12345" };
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+const message = "Login feito com sucesso !";
+
 function pageRender(element) {
   render(
     <Provider store={store}>
@@ -15,6 +29,14 @@ function pageRender(element) {
 }
 
 describe("Teste pagina login", () => {
+  beforeEach(() => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ user, message, token }),
+      })
+    );
+  });
+
   it("Testando se o email esta em formato incorreto", async () => {
     pageRender(<Login />);
 
@@ -53,5 +75,19 @@ describe("Teste pagina login", () => {
     });
 
     expect(passwordInput).toHaveValue("Gustavo1234");
+  });
+
+  it("Mockando Api", async () => {
+    fakeUser.token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    fakeUser.user.email = "gustavo@gmail.com";
+    fakeUser.user.password = "Gustavo12345";
+    beforeEach(() => {
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          json: () => Promise.resolve({ fakeUser }),
+        })
+      );
+    });
   });
 });
